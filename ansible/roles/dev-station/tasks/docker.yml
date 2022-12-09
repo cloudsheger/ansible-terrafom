@@ -1,0 +1,36 @@
+- name: enable docker repository
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    mode: '0644'
+  become: true
+
+- name: install docker
+  yum:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+  become: true
+
+- name: install docker compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/v{{ compose_version }}/docker-compose-linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: '0755'
+  become: true
+
+- name: add user to docker group
+  user:
+    name: "{{ ansible_user_id }}"
+    groups: docker
+    append: true
+  become: true
+
+- name: start and enable docker on boot
+  service:
+    name: docker
+    state: started
+    enabled: true
+  become: true

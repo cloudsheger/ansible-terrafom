@@ -1,0 +1,12 @@
+{
+    "ssh_username": "maintuser",
+    "ami_owner":  "701759196663",
+    "ami_image":  "spel-minimal-centos-7-hvm-2022.10.1.x86_64-gp2",
+    "image_name": "cloudsheger-workstation",
+    "instance_type": "t2.micro",
+    "subnet_name": "cloudcasts-staging-public-subnet",
+    "subnet_az": "us-east-1c-3",
+    "vpc_name": "cloudcasts-staging-vpc",
+    "security_group_name": "cloudcasts-staging-public-sg"
+  }
+  

@@ -1,0 +1,23 @@
+#- name: add Artifactory repository
+#  template:
+#    src: repos/artifactory.repo.j2
+#    dest: /etc/yum.repos.d/artifactory.repo
+#  become: true
+
+#- name: update system
+#  yum: name=* state=latest
+#  become: true
+#  tags:
+#      - update-system
+- name: install required software
+  yum:
+    name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+      - unzip
+      - zip
+      - kernel-devel
+      - git-core
+    state: present
+  become: true

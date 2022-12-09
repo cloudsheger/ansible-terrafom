@@ -1,0 +1,22 @@
+- name: install java versions
+  yum:
+    name:
+      - java-1.8.0-openjdk
+      - java-11-openjdk
+      - ant
+      - maven
+      - testng
+    state: present
+  become: true
+
+#- name: Create .m2 directory for all users
+#  file:
+#    path: /etc/skel/.m2
+#    state: directory
+#  become: true
+#
+#- name: add Maven settings
+#  template:
+#    src: maven/settings.xml.j2
+#    dest: /etc/skel/.m2/settings
+#  become: true

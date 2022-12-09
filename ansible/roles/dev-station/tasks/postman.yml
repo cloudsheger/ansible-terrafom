@@ -1,0 +1,21 @@
+- name: download and explode postman
+  unarchive:
+    src: https://dl.pstmn.io/download/latest/linux64
+    dest: /opt
+    remote_src: true
+  become: true
+
+- name: add postman binary to path
+  file:
+    src: /opt/Postman/Postman
+    dest: /usr/bin/postman
+    owner: root
+    group: root
+    state: link
+  become: true
+
+- name: create postman desktop shortcut
+  copy:
+    src: shortcuts/postman.desktop
+    dest: /usr/share/applications/postman.desktop
+  become: true

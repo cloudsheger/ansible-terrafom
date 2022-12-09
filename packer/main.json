@@ -1,0 +1,89 @@
+{
+        "variables": {
+                "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+                "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+                "region":         "{{env `AWS_DEFAULT_REGION`}}",
+
+                "ami_image": "${ami_image}",
+                "ami_owner": "${ami_owner}",
+
+                "subnet_name": "${subnet_name}",
+                "subnet_az": "${subnet_az}",
+                "vpc_name": "{vpc_name}",
+                "security_group_name":"${security_group_name}",
+
+                "image_name":    "${image_name",
+                "instance_type": "${instance_type}",
+                "ssh_username": "${ssh_username}"                
+        },
+        "builders": [{
+                "name":       "aws",
+                "type":       "amazon-ebs",
+                "access_key": "{{user `aws_access_key`}}",
+                "secret_key": "{{user `aws_secret_key`}}",
+                "region":     "{{user `region`}}",
+                
+                "vpc_filter": {
+                        "filters": {
+                         "tag:Name": "{{user `vpc_name`}}",
+                         "isDefault": "false"
+                         }
+                       },
+                "subnet_filter": {
+                        "filters": {
+                         "tag:Name": "{{user `subnet_name`}}",
+                         "tag:Subnet": "{{user `subnet_az`}}"
+                         }
+                          
+                       },
+                       "associate_public_ip_address": true,
+                "security_group_filter": {
+                        "filters": {
+                         "tag:Name": "{{user `security_group_name`}}"
+                         }
+                       },
+                                     
+                
+                "ami_description": "{{user `image_name`}} image by cloud sheger",
+                "ami_name":        "{{user `image_name`}}-{{isotime \"20060109\"}}",
+                "instance_type":   "{{user `instance_type`}}",
+
+                "launch_block_device_mappings": [{
+                    "device_name":           "/dev/sda1",
+                    "volume_size":           160,
+                    "volume_type":           "gp2",
+                    "iops":                  120,
+                    "encrypted":             false,
+                    "delete_on_termination": true
+                }],
+                
+                "ami_users": [],
+                
+                "source_ami_filter": {
+                        "filters": {
+                                "architecture":                     "x86_64",
+                                "block-device-mapping.volume-type": "gp2",
+                                "name":                             "{{user `ami_image`}}",
+                                "root-device-type":                 "ebs",
+                                "virtualization-type":              "hvm"
+                        },
+                        "most_recent": true,
+                        "owners": [
+                                "{{user `ami_owner`}}"
+                        ]
+                },
+                "ssh_username": "{{user `ssh_username`}}",
+                "user_data_file": "./scripts/base.sh",
+
+                "tags": {
+                        "Name":      "{{user `image_name`}}-{{isotime \"20060109\"}}",
+                        "Generator": "Packer {{packer_version}}",
+                        "Parent":    "{{user `ami_image`}}"
+                }
+        }],
+        "provisioners": [{
+            "type":          "ansible",
+            "playbook_file": "./ansible/app.yml",
+            "use_proxy":     false
+        }]
+}

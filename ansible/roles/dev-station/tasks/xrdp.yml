@@ -1,0 +1,19 @@
+- name: install xrdp
+  yum:
+    name: xrdp
+    state: present
+  become: true
+
+- name: start and enable xrdp on boot
+  service:
+    name: xrdp
+    state: started
+    enabled: true
+  become: true
+
+- name: ensure rdp is available
+  firewalld:
+    port: 3389/tcp
+    permanent: yes
+    state: enabled
+  become: true

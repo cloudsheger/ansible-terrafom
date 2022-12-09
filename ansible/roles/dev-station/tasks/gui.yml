@@ -1,0 +1,8 @@
+- name: install graphical user interface
+  yum:
+    name:
+      - "@^gnome-desktop-environment"
+      - "@graphical-admin-tools"
+      - libXScrnSaver-1.2.2-6.1.el7.x86_64
+    state: present
+  become: true

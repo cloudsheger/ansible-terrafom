@@ -1,0 +1,3 @@
+---
+# tasks file for epel-repository
+- include_tasks: epel-repo.yml

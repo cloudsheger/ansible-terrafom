@@ -1,0 +1,9 @@
+- name: add VSCode repository
+  copy:
+    src: repos/vscode.repo
+    dest: /etc/yum.repos.d/vscode.repo
+  become: true
+
+- name: install VSCode
+  yum: name=code state=present
+  become: true
