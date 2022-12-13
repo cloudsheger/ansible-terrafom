@@ -9,10 +9,16 @@ variable "ami_name" {
     default     = "cloudsheger-workstation-20221209"
 }
 
+variable "key" {
+    type        = string
+    description = "private key name"
+    default     = "box12022"
+}
+
 variable "instance_type" {
   description = "Instance type t2.micro"
   type        = string
-  default     = "t2.medium"
+  default     = "t2.micro"
  
   validation {
    condition     = can(regex("^[Tt][2-3].(nano|micro|small)", var.instance_type))
