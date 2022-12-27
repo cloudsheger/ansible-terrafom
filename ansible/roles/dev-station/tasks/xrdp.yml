@@ -1,19 +1,42 @@
-- name: install xrdp
+---
+- name: "Install epel."
+  yum:
+    name: epel-release
+    state: present
+  become: true
+  become_user: root
+
+- name: "Install xrdp."
   yum:
     name: xrdp
     state: present
   become: true
+  become_user: root
 
-- name: start and enable xrdp on boot
+- name: "Install tigervnc-server."
+  yum:
+    name: tigervnc-server
+    state: present
+  become: true
+  become_user: root
+
+- name: "Start xrdp."
   service:
     name: xrdp
     state: started
-    enabled: true
   become: true
+  become_user: root
 
 - name: ensure rdp is available
   firewalld:
     port: 3389/tcp
     permanent: yes
     state: enabled
+  become: true
+
+- name: Enable firewalld
+  service: 
+   name: firewalld
+   state: started
+   enabled: yes
   become: true

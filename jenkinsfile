@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+    triggers { pollSCM('') }
+
+    parameters {
+        string(name: "AWS_DEFAULT_REGION", description: "Default region to create the AMI", defaultValue: "us-east-1")
+    }
+
+    options {
+        buildDiscarder(logRotator(
+                numToKeepStr: '10',
+                daysToKeepStr: '30',
+                artifactDaysToKeepStr: '30',
+                artifactNumToKeepStr: '3'
+            )
+        )
+        disableConcurrentBuilds()
+        timeout(time: 60, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Create AMI') {
+            agent {
+                docker {
+                    image 'di-mars-mead/honeyinf/ami-builder'
+                    label 'latest' // TODO: Fix this
+                    args '-v /etc/passwd:/etc/passwd'
+                    registryCredentialsId 'art-svc-di-mars-mead-honeyinf-dev'
+                    reuseNode true
+                }
+            }
+
+            environment {
+                AWS_DEFAULT_REGION = "${params.AWS_DEFAULT_REGION}"
+                HOME = '/tmp'
+            }
+
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-iam-workstation.creator']]) {
+                    withCredentials([usernamePassword(credentialsId: 'art-svc-di-mars-mead-honeyinf-dev', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_API_KEY')]) {
+                        sh '''
+                            cd packer
+                            packer build -color=false -force -on-error=cleanup -timestamp-ui main.tf
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+      always {
+        cleanWs(disableDeferredWipeout: true)
+      }
+    }
+}

@@ -1,6 +1,5 @@
-- hosts: all
-  remote_user: maintuser
+- hosts: ansible-1
+  remote_user: root
 
   roles:
-    - workstation
-
+    - ./ansible/roles/dev-station

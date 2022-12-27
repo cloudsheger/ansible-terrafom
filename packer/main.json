@@ -45,7 +45,7 @@
                                      
                 
                 "ami_description": "{{user `image_name`}} image by cloud sheger",
-                "ami_name":        "{{user `image_name`}}-{{isotime \"20060109\"}}",
+                "ami_name":        "{{user `image_name`}}-{{isotime \"200601010\"}}",
                 "instance_type":   "{{user `instance_type`}}",
 
                 "launch_block_device_mappings": [{
@@ -76,7 +76,7 @@
                 "user_data_file": "./scripts/base.sh",
 
                 "tags": {
-                        "Name":      "{{user `image_name`}}-{{isotime \"20060109\"}}",
+                        "Name":      "{{user `image_name`}}-{{isotime \"200601010\"}}",
                         "Generator": "Packer {{packer_version}}",
                         "Parent":    "{{user `ami_image`}}"
                 }

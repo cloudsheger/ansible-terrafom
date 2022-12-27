@@ -1,0 +1,19 @@
+---
+- name: install zsh
+  yum:
+    name:
+      - zsh
+    state: present
+  become: true
+  tags:
+      - zsh
+
+- name: install oh-my-zsh
+  environment:
+    ZSH: /etc/skel/.oh-my-zsh
+  shell:
+    cmd: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    creates: "/etc/skel/.oh-my-zsh"
+  become: true
+  tags:
+      - zsh

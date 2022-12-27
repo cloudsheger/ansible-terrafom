@@ -3,7 +3,7 @@
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "centos/stream8"
+  config.vm.box = "geerlingguy/centos7"
 
   # Do not generate a new SSH key for each VM
   config.ssh.insert_key = false
@@ -23,8 +23,8 @@ Vagrant.configure("2") do |config|
 
   # Install ansible & dependencies
   $script = <<-'SCRIPT'
-    dnf -y update
-    dnf -y install python3 python3-pip podman ansible-core
+    yum -y update
+    yum -y install python3 python3-pip podman ansible-core
   SCRIPT
 
   # Install ansible-navigator
@@ -48,6 +48,10 @@ Vagrant.configure("2") do |config|
         config.vm.provision :shell, inline: $script2, privileged: false
 
         config.vm.provision "file", source: "./hosts", destination: "~/hosts"
+        config.vm.provision "ansible" do |ansible|
+          ansible.playbook = "site.yml"
+          ansible.limit = "all"
+        end    
       end
     end
   end
