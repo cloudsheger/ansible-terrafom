@@ -2,5 +2,4 @@
   remote_user: maintuser
 
   roles:
-    - epel-repository
     - dev-station

@@ -2,7 +2,8 @@ data "template_file" "init" {
         template = file("user_data.sh")
         vars = {
             user_name  = var.user_name
-            public_key = file("id_rsa.pub")
+            //public_key = file("id_rsa.pub")
+            public_key = file("${path.module}/pub_keys/id_rsa.pub")
         }
 }
 

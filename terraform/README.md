@@ -1,7 +1,10 @@
 How to run the script
 
 ```
-export WS=
+export WS=jemal
+```
+
+```
 terraform apply -auto-approve -lock-timeout=600s -no-color -var user_name=$WS
 ```
 How to destroy the script

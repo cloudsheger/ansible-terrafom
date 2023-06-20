@@ -73,7 +73,7 @@
                         ]
                 },
                 "ssh_username": "{{user `ssh_username`}}",
-                "user_data_file": "./scripts/base.sh",
+                "user_data_file": "../scripts/base.sh",
 
                 "tags": {
                         "Name":      "{{user `image_name`}}-{{isotime \"20060109\"}}",
@@ -83,7 +83,7 @@
         }],
         "provisioners": [{
             "type":          "ansible",
-            "playbook_file": "./ansible/app.yml",
+            "playbook_file": "../ansible/app.yml",
             "use_proxy":     false
         }]
 }

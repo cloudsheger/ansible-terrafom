@@ -6,7 +6,7 @@ variable "user_name" {
 variable "ami_name" {
     type        = string
     description = "The AMI to base the workstation on"
-    default     = "cloudsheger-workstation-20221209"
+    default     = "cloudsheger-workstation-20230609"
 }
 
 variable "key" {

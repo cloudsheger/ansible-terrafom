@@ -2,7 +2,8 @@ resource "aws_instance" "this" {
     ami           = data.aws_ami.this.id
     instance_type = var.instance_type
     key_name      = var.key
-    user_data     = data.template_file.init.template
+    #user_data     = data.template_file.init.template
+    user_data     = data.template_file.init.rendered
     #subnet_id     = data.aws_subnet.this.id
     #map_public_ip_on_launch = true
 
