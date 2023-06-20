@@ -1,30 +1,18 @@
 #!/bin/bash
 
-# Machine-specific configurations to customize the workstation from the AMI.
-useradd -m -G adm,docker,wheel,maintuser,jemal -c "${user_name}" ${user_name}
-mkdir -m 0700 /home/${user_name}/.ssh
-echo "${public_key}" > /home/${user_name}/.ssh/authorized_keys
-chmod 0600 /home/${user_name}/.ssh/authorized_keys
-chown -R ${user_name}:${user_name} /home/${user_name}/.ssh
+set -x
+# resize some volumess
 
-echo "# User rules for ${user_name}"
-${user_name} ALL=(root) NOPASSWD:ALL > /etc/sudoers.d/ztpt-users
-chmod 0440 /etc/sudoers.d/ztpt-users
+expand_volume="RootVG/rootVol"
+root_partition=$(lvs --noheadings -o devices "$expand_volume" | head -n1 | sed 's/(.*//' | xargs readlink -f)
+root_partition_num=$(grep -o '[0-9]*$' <<< "$root_partition")
+root_device=$(lsblk -pno pkname "$root_partition" | head -n1)
 
-PYPI_URL=https://pypi.org/simple
+/usr/bin/growpart "$root_device" "$root_partition_num" \
+    && pvresize "$root_partition" \
+    && lvresize --resizefs --size +25G "$expand_volume" \
+    || echo "Unable to expand $expand_volume size" 2> /dev/null
 
-# Setup terminal support for UTF-8
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
+lvresize --resizefs --size +25G /dev/RootVG/homeVol
 
-# Ensure pip exists
-python3 -m ensurepip
-
-# Upgrade python build dependencies
-python3 -m pip install --index-url="$PYPI_URL" --upgrade pip setuptools
-
-# Install watchmaker
-python3 -m pip install --index-url="$PYPI_URL" --upgrade watchmaker boto3
-
-# execute watchmaker
-#watchmaker -e <environment> -A <admin_group> -t <computer_name> --log-dir=/var/log/watchmaker -c s3://dicelab-watchmaker/config.yaml
+lvresize --resizefs --size +6G /dev/RootVG/varVol
